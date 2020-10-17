@@ -30,6 +30,7 @@ func main() {
 }
 
 func connHandler(leftConn *net.TCPConn) {
+	origAddr := getOrigAddr(leftConn)
 
 }
 
@@ -48,7 +49,7 @@ func getOrigAddr(leftConn *net.TCPConn) (net.TCPAddr, error) {
 	}
 	origConn := (*syscall.RawSockaddrInet4)(unsafe.Pointer(addr))
 
-	copy([]byte(origAddr.IP), origConn.Addr)
+	origAddr.IP = net.IPv4(origConn.Addr[0], origConn.Addr[1], origConn.Addr[2], origConn.Addr[3])
 	origAddr.Port = int(origConn.Port)
 
 	return origAddr, nil
