@@ -2,14 +2,30 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"log"
 	"net"
+	"os"
+	"sync"
 	"syscall"
-	"unsafe"
 )
 
 const SO_ORIGINAL_DST = 80
 
 func main() {
+	pscheme := "http"
+	paddr := "127.0.0.1"
+	pport := "3128"
+	tcpAddr, err := net.ResolveTCPAddr("tcp", paddr+":"+pport)
+	if err != nil {
+		panic(err)
+	}
+	proxy := &Proxy{
+		scheme:  &pscheme,
+		addr:    &paddr,
+		port:    &pport,
+		tcpAddr: tcpAddr,
+	}
 	addr, err := net.ResolveTCPAddr("tcp", ":1080")
 	if err != nil {
 		panic(err)
@@ -25,32 +41,56 @@ func main() {
 			fmt.Println("accept error: %w", err)
 			continue
 		}
-		go connHandler(conn)
+		go connHandler(conn, proxy)
 	}
 }
 
-func connHandler(leftConn *net.TCPConn) {
-	origAddr := getOrigAddr(leftConn)
-
-}
-
-func getOrigAddr(leftConn *net.TCPConn) (net.TCPAddr, error) {
-	var origAddr net.TCPAddr
-
-	leftFile, err := leftConn.File()
+func connHandler(localConn *net.TCPConn, proxy *Proxy) {
+	defer localConn.Close()
+	connFile, err := localConn.File()
 	if err != nil {
 		fmt.Println("leftConn.File error: %w", err)
-		return origAddr, err
+		return
 	}
-	addr, err := syscall.GetsockoptIPv6Mreq(int(leftFile.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
+
+	fmt.Println("......")
+	origRemote, err := getOrigAddr(connFile)
+	if err != nil {
+		fmt.Println("getOrigAddr")
+		return
+	}
+	remoteConn, err := proxy.CreateSession(origRemote)
+	if err != nil {
+		return
+	}
+	defer remoteConn.Close()
+
+	log.Println("remoteConn: ", remoteConn)
+	var streamWait sync.WaitGroup
+	streamWait.Add(2)
+
+	streamConn := func(dst io.Writer, src io.Reader) {
+		io.Copy(dst, src)
+		streamWait.Done()
+	}
+
+	go streamConn(remoteConn, localConn)
+	go streamConn(localConn, remoteConn)
+
+	streamWait.Wait()
+}
+
+func getOrigAddr(file *os.File) (*string, error) {
+	addr, err := syscall.GetsockoptIPv6Mreq(int(file.Fd()), syscall.IPPROTO_IP, SO_ORIGINAL_DST)
 	if err != nil {
 		fmt.Println("syscall.GetsockoptIPv6Mreq error: %w", err)
-		return origAddr, err
+		return nil, err
 	}
-	origConn := (*syscall.RawSockaddrInet4)(unsafe.Pointer(addr))
 
-	origAddr.IP = net.IPv4(origConn.Addr[0], origConn.Addr[1], origConn.Addr[2], origConn.Addr[3])
-	origAddr.Port = int(origConn.Port)
+	remote := fmt.Sprintf("%d.%d.%d.%d:%d",
+		addr.Multiaddr[4], addr.Multiaddr[5], addr.Multiaddr[6], addr.Multiaddr[7],
+		uint16(addr.Multiaddr[2])<<8+uint16(addr.Multiaddr[3]))
+	log.Println("connect: ", remote)
 
-	return origAddr, nil
+	return &remote, nil
 }
