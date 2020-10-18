@@ -11,45 +11,55 @@ import (
 
 // Proxy -- http proxy client struct
 type Proxy struct {
-	scheme  *string
-	addr    *string
-	port    *string
+	scheme  string
+	addr    string
+	port    string
+	auth    string
 	tcpAddr *net.TCPAddr
 }
 
 // CreateSession -- create proxy session
-func (p *Proxy) CreateSession(origRemote *string) (*net.TCPConn, error) {
-	if p.scheme == nil || strings.Compare(*p.scheme, "http") != 0 {
-		log.Println("only support http, current: ", p.scheme)
-		return nil, fmt.Errorf("only support http")
+func (p *Proxy) CreateSession(origRemote string) (*net.TCPConn, *http.Response, error) {
+	var auth string = ""
+
+	if strings.Compare(p.scheme, "http") != 0 {
+		return nil, nil, fmt.Errorf("only support http, current: %s", p.scheme)
 	}
 	conn, err := net.DialTCP("tcp", nil, p.tcpAddr)
 	if err != nil {
-		log.Println("TCP connect failed", err)
-		return nil, err
+		return nil, nil, err
+	}
+
+	if strings.Contains(p.auth, "basic") {
+		auth = "Proxy-Authorization: " + p.auth + "\r\n"
 	}
 
 	httpHeader := fmt.Sprintf(
 		"CONNECT %s HTTP/1.1\r\n"+
 			"Host: %s\r\n"+
+			"%s"+
 			"Proxy-Connection: Keep-Alive\r\n"+
 			"\r\n",
-		*origRemote, *origRemote)
+		origRemote, origRemote, auth)
 	log.Println("http header:\n", httpHeader)
-	conn.Write([]byte(httpHeader))
+	_, err = conn.Write([]byte(httpHeader))
+	if err != nil {
+		conn.Close()
+		return nil, nil, err
+	}
+
 	reader := bufio.NewReader(conn)
 	resp, err := http.ReadResponse(reader, nil)
 	if err != nil {
 		conn.Close()
-		log.Println("parse http response error: ", err)
-		return nil, err
-	} else if resp.StatusCode != http.StatusOK {
-		// TODO: write response to original requester
+		return nil, nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
 		conn.Close()
-		log.Println("http response code is not 200, got ", resp.Status)
-		return nil, fmt.Errorf("http response code is not 200, got ", resp.Status)
+		return nil, resp, fmt.Errorf("http response code is not 200, got: %s", resp.Status)
 	}
 
 	log.Println("http CONNECT success")
-	return conn, nil
+	return conn, nil, nil
 }
