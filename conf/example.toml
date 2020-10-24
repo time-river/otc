@@ -1,0 +1,9 @@
+[server]
+address = ":1080"
+upstream = ["http://127.0.0.1:8080"]
+
+[rules]
+direct_list = ["example.org", "127.0.0.1"]
+direct_refs = ["direct-refs.txt"]
+proxy_list = ["example.org", "127.0.0.1"]
+proxy_refs = ["proxy-refs.txt"]
