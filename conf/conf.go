@@ -9,12 +9,14 @@ import (
 	cli "github.com/urfave/cli/v2"
 )
 
-type server struct {
+// Server -- server config
+type Server struct {
 	Address  string   `toml:"address"`
 	Upstream []string `toml:"upstream"`
 }
 
-type rules struct {
+// Router -- forward rules
+type Router struct {
 	DirectList []string `toml:"direct_list"`
 	DirectRefs []string `toml:"direct_refs"`
 	ProxyList  []string `toml:"proxy_list"`
@@ -23,8 +25,8 @@ type rules struct {
 
 // Conf -- configuration struct
 type Conf struct {
-	Server server
-	Rules  rules
+	Server
+	Router
 }
 
 func parseConf(path string) (*Conf, error) {

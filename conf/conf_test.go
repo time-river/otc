@@ -21,21 +21,21 @@ func TestParseConf(t *testing.T) {
 	}
 
 	var directList = []string{"example.org", "127.0.0.1"}
-	if len(directList) != len(conf.Rules.ProxyList) {
-		t.Fatalf("`rules.direct_list` expected '%v', but got '%v'", directList, conf.Rules.DirectList)
+	if len(directList) != len(conf.Router.ProxyList) {
+		t.Fatalf("`router.direct_list` expected '%v', but got '%v'", directList, conf.Router.DirectList)
 	}
 
 	var directRefs = []string{"direct-refs.txt"}
-	if len(directRefs) != len(conf.Rules.DirectRefs) {
-		t.Fatalf("`rules.direct_refs` expected '%v', but got '%v'", directRefs, conf.Rules.DirectRefs)
+	if len(directRefs) != len(conf.Router.DirectRefs) {
+		t.Fatalf("`router.direct_refs` expected '%v', but got '%v'", directRefs, conf.Router.DirectRefs)
 	}
 	var proxyList = []string{"example.org", "127.0.0.1"}
-	if len(proxyList) != len(conf.Rules.ProxyList) {
-		t.Fatalf("`rules.proxy_list` expected '%v', but got '%v'", proxyList, conf.Rules.ProxyList)
+	if len(proxyList) != len(conf.Router.ProxyList) {
+		t.Fatalf("`router.proxy_list` expected '%v', but got '%v'", proxyList, conf.Router.ProxyList)
 	}
 
 	var proxyRefs = []string{"proxy-refs.txt"}
-	if len(proxyRefs) != len(conf.Rules.ProxyRefs) {
-		t.Fatalf("`rules.proxy_refs` expected '%v', but got '%v'", proxyRefs, conf.Rules.ProxyRefs)
+	if len(proxyRefs) != len(conf.Router.ProxyRefs) {
+		t.Fatalf("`router.proxy_refs` expected '%v', but got '%v'", proxyRefs, conf.Router.ProxyRefs)
 	}
 }

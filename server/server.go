@@ -8,8 +8,8 @@ import (
 )
 
 // InitServer -- start server
-func InitServer(conf *conf.Conf) error {
-	addr, err := net.ResolveTCPAddr("tcp", conf.Server.Address)
+func InitServer(conf *conf.Server) error {
+	addr, err := net.ResolveTCPAddr("tcp", conf.Address)
 	if err != nil {
 		return err
 	}
