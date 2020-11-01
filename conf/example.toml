@@ -1,6 +1,6 @@
 [server]
 address = ":1080"
-upstream = ["http://127.0.0.1:8080"]
+upstream = "http://127.0.0.1:8080"
 
 [router]
 direct_list = ["example.org", "127.0.0.1"]

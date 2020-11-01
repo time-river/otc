@@ -15,7 +15,7 @@ func TestParseConf(t *testing.T) {
 		t.Fatalf("`server.address` expected '%s', but got '%s'", address, conf.Server.Address)
 	}
 
-	var upstream = []string{"http://127.0.0.1:8080"}
+	var upstream = "http://127.0.0.1:8080"
 	if len(upstream) != len(conf.Server.Upstream) {
 		t.Fatalf("`server.upstream` expected '%v', but got '%v'", upstream, conf.Server.Upstream)
 	}

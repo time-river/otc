@@ -11,8 +11,8 @@ import (
 
 // Server -- server config
 type Server struct {
-	Address  string   `toml:"address"`
-	Upstream []string `toml:"upstream"`
+	Address  string `toml:"address"`
+	Upstream string `toml:"upstream"`
 }
 
 // Router -- forward rules

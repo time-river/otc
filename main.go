@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/urfave/cli/v2" // imports as package "cli"
+	cli "github.com/urfave/cli/v2"
 
 	"otc/conf"
 	"otc/router"
@@ -21,11 +21,12 @@ func action(c *cli.Context) error {
 	if err != nil {
 		return err
 	}
-	err = server.InitServer(&conf.Server)
+	err = server.Run(&conf.Server)
 	if err != nil {
 		router.CleanRouter()
 		return err
 	}
+
 	return nil
 }
 
