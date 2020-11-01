@@ -16,7 +16,7 @@ func main() {
 	pscheme := "http"
 	paddr := "127.0.0.1"
 	pport := "3128"
-	pauth := "basic YWxhZGRpbjpvcGVuc2VzYW1l"
+	pauth := "basic YWxhZGRpbjpvcGVuc2VzYW1l" // aladdin:opensesame
 	tcpAddr, err := net.ResolveTCPAddr("tcp", paddr+":"+pport)
 	if err != nil {
 		panic(err)
