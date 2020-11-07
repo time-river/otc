@@ -72,7 +72,7 @@ func connHandler(localConn *net.TCPConn, up *upstream.Upstream) {
 	streamConn := func(dst io.Writer, src io.Reader) {
 		_, err := io.Copy(dst, src)
 		if err != nil {
-			log.Panicln("streamConn: ", err)
+			log.Println("streamConn: ", err)
 		}
 		streamWait.Done()
 	}
