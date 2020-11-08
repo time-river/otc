@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	"otc/conf"
+	"github.com/time-river/otc/conf"
 )
 
 var chainNane = "OTC_ZONE"

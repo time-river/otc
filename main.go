@@ -6,9 +6,9 @@ import (
 
 	cli "github.com/urfave/cli/v2"
 
-	"otc/conf"
-	"otc/router"
-	"otc/server"
+	"github.com/time-river/otc/conf"
+	"github.com/time-river/otc/router"
+	"github.com/time-river/otc/server"
 )
 
 func action(c *cli.Context) error {

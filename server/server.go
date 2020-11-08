@@ -10,8 +10,8 @@ import (
 	"sync"
 	"syscall"
 
-	"otc/conf"
-	"otc/upstream"
+	"github.com/time-river/otc/conf"
+	"github.com/time-river/otc/upstream"
 )
 
 const SO_ORIGINAL_DST = 80
