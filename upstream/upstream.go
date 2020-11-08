@@ -7,6 +7,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
+	"log"
 	"net"
 	"net/http"
 	"net/url"
@@ -79,6 +80,7 @@ func (u *Upstream) CreateSession(origRemote *string, localConn *net.TCPConn) (*n
 		return nil, err
 	}
 
+	log.Println("connect... remote: ", *origRemote)
 	return conn, nil
 }
 

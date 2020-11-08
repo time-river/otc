@@ -17,6 +17,7 @@ type Server struct {
 
 // Router -- forward rules
 type Router struct {
+	Mode       string
 	DirectList []string `toml:"direct_list"`
 	DirectRefs []string `toml:"direct_refs"`
 	ProxyList  []string `toml:"proxy_list"`

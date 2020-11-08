@@ -20,6 +20,11 @@ func TestParseConf(t *testing.T) {
 		t.Fatalf("`server.upstream` expected '%v', but got '%v'", upstream, conf.Server.Upstream)
 	}
 
+	var mode = "local"
+	if len(mode) != len(conf.Router.Mode) {
+		t.Fatalf("`router.mode` expected '%v', but got '%v'",
+			mode, conf.Router.Mode)
+	}
 	var directList = []string{"example.org", "127.0.0.1"}
 	if len(directList) != len(conf.Router.ProxyList) {
 		t.Fatalf("`router.direct_list` expected '%v', but got '%v'", directList, conf.Router.DirectList)

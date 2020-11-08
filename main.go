@@ -17,13 +17,13 @@ func action(c *cli.Context) error {
 		return err
 	}
 
-	err = router.InitRouter(&conf.Router)
+	err = router.Init(&conf.Router)
 	if err != nil {
 		return err
 	}
 	err = server.Run(&conf.Server)
 	if err != nil {
-		router.CleanRouter()
+		router.Cleanup()
 		return err
 	}
 
