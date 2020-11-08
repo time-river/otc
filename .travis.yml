@@ -1,0 +1,9 @@
+language: go
+go_import_path: github.com/time-river/otc
+sudo: false
+jobs:
+  include:
+  - stage: build
+    os: linux
+    script:
+    - go build
