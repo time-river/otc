@@ -1,7 +1,9 @@
 language: go
 go_import_path: github.com/time-river/otc
-os:
-- linux
+arch:
+  - amd64
+  - arm64
+os: linux
 jobs:
   include:
   - stage: build
