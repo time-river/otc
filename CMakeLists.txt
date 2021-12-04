@@ -22,6 +22,7 @@ add_executable (otc
 	include/generate/ebpf_kern.skel.h
 	src/main.c
 	src/nft.c
+	src/param.c
 )
 
 # set dynamic libraries
