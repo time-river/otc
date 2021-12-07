@@ -18,7 +18,6 @@
  * - better log
  */
 
-#include <stdio.h>
 #include <time.h>
 #include <netinet/in.h>
 
@@ -35,6 +34,7 @@
 
 #include "common.h"
 #include "nft.h"
+#include "log.h"
 
 static struct nftnl_expr *alloc_counter(union nft_expr_arg *_) {
 	return nftnl_expr_alloc("counter");
@@ -369,12 +369,12 @@ static int nft_msg(struct nft_meta *meta, nft_msg_cb_t cb) {
 
 	nl = mnl_socket_open(NETLINK_NETFILTER);
 	if (nl == NULL) {
-		perror("mnl_socket_open");
+		pr_perror("mnl_socket_open");
 		return -1;
 	}
 
 	if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0) {
-		perror("mnl_socket_bind");
+		pr_perror("mnl_socket_bind");
 		goto out;
 	}
 
@@ -382,7 +382,7 @@ static int nft_msg(struct nft_meta *meta, nft_msg_cb_t cb) {
 
 	if (mnl_socket_sendto(nl, mnl_nlmsg_batch_head(batch),
 				mnl_nlmsg_batch_size(batch)) < 0) {
-		perror("mnl_socket_sendto");
+		pr_perror("mnl_socket_sendto");
 		goto out;
 	}
 
@@ -396,7 +396,7 @@ static int nft_msg(struct nft_meta *meta, nft_msg_cb_t cb) {
 		retval = mnl_socket_recvfrom(nl, buf, sizeof(buf));
 	}
 	if (retval == -1)
-		perror("error");
+		pr_perror("error");
 
 out:
 	mnl_socket_close(nl);
