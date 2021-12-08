@@ -23,6 +23,7 @@ add_executable (otc
 	src/main.c
 	src/nft.c
 	src/param.c
+	src/acl.c
 )
 
 # set dynamic libraries
@@ -31,3 +32,4 @@ target_link_libraries (otc z)
 target_link_libraries (otc elf)
 target_link_libraries (otc mnl)
 target_link_libraries (otc nftnl)
+target_link_libraries (otc resolv)
