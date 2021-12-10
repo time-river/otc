@@ -24,6 +24,7 @@ add_executable (otc
 	src/nft.c
 	src/param.c
 	src/acl.c
+	src/addr.c
 )
 
 # set dynamic libraries
